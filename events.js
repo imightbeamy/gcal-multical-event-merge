@@ -1,6 +1,6 @@
-function EventMerger (key_function, parent_selector) {
+function EventMerger (key_function, clean_up_function) {
     this.makeKey = key_function;
-    this.parent_selector = parent_selector;
+    this.cleanUp = clean_up_function;
 }
 
 EventMerger.prototype = {
@@ -36,7 +36,7 @@ EventMerger.prototype = {
             $(event_set).each(function() {$(this).remove()});
 
             keep.css('background-image', this.makeStripes(colors));
-            keep.parents('.chip').css('width', '100%');
+            this.cleanUp(keep);
         }
     },
     mergeSets: function ($events) {
@@ -54,7 +54,14 @@ function eventKey ($event) {
     return event_name + event_time + col;
 }
 
-merger = new EventMerger(eventKey);
+function cleanUp ($event) {
+    var chip = $event.parents('.chip'),
+        left = Number(chip.css('left').replace(/[%px]*/g,''));
+    chip.css('width', 100 - left + "%");
+    $event.parents('td').find('.chip-border').remove();
+}
+
+merger = new EventMerger(eventKey, cleanUp);
  $(document).on("DOMNodeInserted", ".tg-mainwrapper", function(e) {
     merger.mergeSets($('dl'));
  });
