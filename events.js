@@ -10,7 +10,6 @@ EventMerger.prototype = {
     	$events.each(function() {
     		var $event = $(this),
                 key = makeKey($event).replace(/\s/g,'');
-            console.log(key);
     		event_sets[key] = event_sets[key] || [];
     		event_sets[key].push($event);
     	});
@@ -42,7 +41,6 @@ EventMerger.prototype = {
     },
     mergeSets: function ($events) {
         var sets = this.getEventSets($events);
-        console.log(sets);
         $.each(sets, $.proxy(this.mergeEvents, this));
     }
 };
