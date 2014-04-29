@@ -1,7 +1,7 @@
 {
-  "name": "Google Caladar Mulit-Cal Even Merge",
+  "name": "Google Calendar Event Merge",
   "description": "Chrome extension that visually merges the same event on multiple Google Calendars into one event with stripes.",
-  "version": "0.1",
+  "version": "1.0",
       "content_scripts": [ {
         "matches": [
             "http://*/*",
@@ -14,5 +14,7 @@
   "permissions": [
   		"https://www.google.com/calendar/*"
   ],
+  "icons": { "48": "icon48.png",
+          "128": "icon128.png" },
   "manifest_version": 2
 }
