@@ -1,6 +1,6 @@
 {
   "name": "Google Calendar Event Merge",
-  "description": "Chrome extension that visually merges the same event on multiple Google Calendars into one event with stripes.",
+  "description": "Chrome extension that visually merges the same event on multiple Google Calendars into one event.",
   "version": "1.0",
       "content_scripts": [ {
         "matches": [
