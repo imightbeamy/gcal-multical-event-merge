@@ -116,3 +116,18 @@ var dayLongMerger = new EventMerger(function ($event) {
 $(document).on("DOMNodeInserted", "#topcontainerwk", function () {
     dayLongMerger.mergeSets($(".rb-n"));
 });
+
+// ...and now, in month-view display
+
+var monthViewMerger = new EventMerger(function ($event) {
+    var event_name = $event.text(),
+        $td = $event.parents('td'),
+        span = $td.attr("colspan") || 1,
+        row = $td.parents('.month-row').index(),
+        col = getCellLocation($td).cols - 2;
+    return event_name + "_" + row + "_" + col + "_" + span;
+});
+
+$(document).on("DOMNodeInserted", ".mv-container", function () {
+    monthViewMerger.mergeSets($(".rb-n"));
+});
