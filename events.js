@@ -41,7 +41,7 @@ EventMerger.prototype = {
             });
 
             keep.css('background-image', this.makeStripes(colors));
-            this.cleanUp(keep);
+            this.cleanUp && this.cleanUp(keep);
         }
     },
     mergeSets: function ($events) {
@@ -68,4 +68,35 @@ function cleanUp($event) {
 var merger = new EventMerger(eventKey, cleanUp);
 $(document).on("DOMNodeInserted", ".tg-mainwrapper", function () {
     merger.mergeSets($('dl'));
+});
+
+/*****************************************************************************/
+
+// merge day-long events, on top of week mode display
+
+function dayLongEventKey($event) {
+    var event_name = $event.text(),
+        $td = $event.parents('td'),
+        days = $td.attr("colspan") || 1,
+        col = $td.position().left;
+    return event_name + col + days;
+}
+
+var dayLongMerger = new EventMerger(dayLongEventKey);
+
+$(document).on("DOMNodeInserted", "#topcontainerwk", function () {
+    dayLongMerger.mergeSets($(".rb-n"));
+});
+
+// ...and now, in month-view display
+
+function monthDayEventKey($event) {
+    var row = $event.parents('.month-row').index();
+    return dayLongEventKey($event) + row;
+}
+
+var monthViewMerger = new EventMerger(monthDayEventKey);
+
+$(document).on("DOMNodeInserted", ".mv-container", function () {
+    monthViewMerger.mergeSets($(".rb-n"));
 });
