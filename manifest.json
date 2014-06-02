@@ -1,12 +1,9 @@
 {
-  "name": "Google Calendar Event Merge",
+  "name": "Event Merge for Google Calendar™",
   "description": "Chrome extension that visually merges the same event on multiple Google Calendars into one event.",
-  "version": "1.0",
+  "version": "1.2",
       "content_scripts": [ {
-        "matches": [
-            "http://*/*",
-            "https://*/*"
-            ],
+        "matches": ["https://www.google.com/calendar/*", "http://www.google.com/calendar/*"],
         "js": ["jquery-2.1.0.min.js", "events.js"],
         "run_at": "document_end"
         }
