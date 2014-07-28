@@ -1,3 +1,13 @@
+// ==UserScript==
+// @name        Event Merge for Google Calendar™ (by @imightbeAmy. Thanks!)
+// @namespace   gcal-multical-event-merge
+// @include     https://www.google.com/calendar/*
+// @include     http://www.google.com/calendar/*
+// @require     https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js
+// @version     1
+// @grant       none
+// ==/UserScript==
+
 'use strict';
 
 function EventMerger(key_function, clean_up_function) {
