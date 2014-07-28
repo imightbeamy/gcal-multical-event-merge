@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name        Event Merge for Google Calendar™ (by @imightbeAmy. Thanks!)
+// @name        Event Merge for Google Calendar™ (by @imightbeAmy)
 // @namespace   gcal-multical-event-merge
 // @include     https://www.google.com/calendar/*
 // @include     http://www.google.com/calendar/*
