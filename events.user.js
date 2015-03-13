@@ -113,7 +113,7 @@ function monthTimedEventKey($event) {
 
 function cleanUp($event) {
     var chip = $event.parents('.chip'),
-        left = Number(chip.css('left').replace(/[%px]*/g, ''));
+        left = Number(chip[0].style.left.replace(/%/g, ''));
     chip.css('width', 100 - left + "%");
 }
 
@@ -126,20 +126,22 @@ var merging_main = false;
 $(document).on("DOMNodeInserted", "#gridcontainer", function () {
     if (!merging_main) {
         merging_main = true;
-        weekTimed.mergeSets($('dl'));
-        weekAllDay.mergeSets($(".rb-n"));
-        monthTimed.mergeSets($(".te"));
-        monthAllDay.mergeSets($(".rb-n"));
+        var grid_container = $(this);
+        weekTimed.mergeSets(grid_container.find('dl'));
+        weekAllDay.mergeSets(grid_container.find(".rb-n"));
+        monthTimed.mergeSets(grid_container.find(".te"));
+        monthAllDay.mergeSets(grid_container.find(".rb-n"));
         merging_main = false;
     }
 });
 
 var merging_find_time = false;
-$(document).on("DOMNodeInserted", ".tg-mainwrapper", function () {
+$(document).on("DOMNodeInserted", "#scTgTable", function (e) {
     if (!merging_find_time) {
         merging_find_time = true;
-        weekTimed.mergeSets($('dl'));
-        weekAllDay.mergeSets($(".rb-n"));
+        var find_time_container = $(this);
+        weekTimed.mergeSets(find_time_container.find('dl'));
+        weekAllDay.mergeSets(find_time_container.find(".rb-n"));
         merging_find_time = false;
     }
 });
