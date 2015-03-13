@@ -122,14 +122,24 @@ var weekTimed = new EventMerger(weekTimedEventKey, cleanUp),
     monthTimed = new EventMerger(monthTimedEventKey),
     monthAllDay = new EventMerger(monthAllDayEventKey);
 
-var merging = false;
+var merging_main = false;
 $(document).on("DOMNodeInserted", "#gridcontainer", function () {
-    if (!merging) {
-        merging = true;
+    if (!merging_main) {
+        merging_main = true;
         weekTimed.mergeSets($('dl'));
         weekAllDay.mergeSets($(".rb-n"));
         monthTimed.mergeSets($(".te"));
         monthAllDay.mergeSets($(".rb-n"));
-        merging = false;
+        merging_main = false;
+    }
+});
+
+var merging_find_time = false;
+$(document).on("DOMNodeInserted", ".tg-mainwrapper", function () {
+    if (!merging_find_time) {
+        merging_find_time = true;
+        weekTimed.mergeSets($('dl'));
+        weekAllDay.mergeSets($(".rb-n"));
+        merging_find_time = false;
     }
 });
