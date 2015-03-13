@@ -7,8 +7,4 @@ Chrome extension that visually merges the same event on multiple Google Calendar
 OR
 ###[Install with Greasemonkey](https://github.com/imightbeamy/gcal-multical-event-merge/raw/master/events.user.js)
 
-![hackweek](images/hackweek.png) ![hackweek merged](images/hackweek_merged.png)
-
-![bbq](images/bbq.png) ![bbq merged](images/bbq_merged.png)
-
-Make this ^ . . . . . look like . . . . . . . this ^!
+![hackweek](images/examples.png)
