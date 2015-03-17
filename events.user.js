@@ -114,7 +114,7 @@ function monthTimedEventKey($event) {
 function cleanUp($event) {
     var chip = $event.parents('.chip'),
         left = Number(chip[0].style.left.replace(/%/g, ''));
-    chip.css('width', 100 - left + "%");
+    chip.css('width', 100 - (isNaN(left) ? 0 : left) + "%");
 }
 
 var weekTimed = new EventMerger(weekTimedEventKey, cleanUp),
