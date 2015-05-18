@@ -98,12 +98,13 @@ function tableEventKey($event) {
         $td = $event.parents('td'),
         days = $td.attr("colspan") || 1,
         col = $td.position().left;
-    return event_name + col + days;
+    return event_name + ":" + col + ":" + days;
 }
 
 function monthAllDayEventKey($event) {
     var row = $event.parents('.month-row').index();
-    return tableEventKey($event) + row;
+
+    return tableEventKey($event) + ":" + row;
 }
 
 function monthTimedEventKey($event) {
@@ -128,9 +129,9 @@ $(document).on("DOMNodeInserted", "#gridcontainer", function () {
         merging_main = true;
         var grid_container = $(this);
         weekTimed.mergeSets(grid_container.find('dl'));
-        weekAllDay.mergeSets(grid_container.find(".rb-n"));
+        weekAllDay.mergeSets(grid_container.find(".wk-weektop .rb-n"));
         monthTimed.mergeSets(grid_container.find(".te"));
-        monthAllDay.mergeSets(grid_container.find(".rb-n"));
+        monthAllDay.mergeSets(grid_container.find(".mv-event-container .rb-n"));
         merging_main = false;
     }
 });
