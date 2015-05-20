@@ -1,0 +1,10 @@
+{
+  "appName": {
+    "message": "Evento Merge para Google Calendar ™",
+    "description": "The title of the application, displayed in the web store."
+  },
+  "appDesc": {
+    "message": "Extensión de Chrome que se funde visualmente el mismo evento en múltiples calendarios de Google en un solo evento.",
+    "description": "The description of the application, displayed in the web store."
+  }
+}
