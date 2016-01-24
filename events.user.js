@@ -3,6 +3,8 @@
 // @namespace   gcal-multical-event-merge
 // @include     https://www.google.com/calendar/*
 // @include     http://www.google.com/calendar/*
+// @include     https://calendar.google.com/*
+// @include     http://calendar.google.com/*
 // @require     https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js
 // @version     1
 // @grant       none
