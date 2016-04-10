@@ -67,7 +67,7 @@ EventMerger.prototype = {
 
             var keep = event_set.shift();
             $(event_set).each(function () {
-                $(this).parent().remove();
+                $(this).parent().css('visibility', 'hidden');
             });
 
             if (style_type == 'background-color') {
@@ -109,7 +109,6 @@ function tableEventKey($event) {
 
 function monthAllDayEventKey($event) {
     var row = $event.parents('.month-row').index();
-
     return tableEventKey($event) + ":" + row;
 }
 
@@ -119,9 +118,11 @@ function monthTimedEventKey($event) {
 }
 
 function cleanUp($event) {
-    var chip = $event.parents('.chip'),
-        left = Number(chip[0].style.left.replace(/%/g, ''));
-    chip.css('width', 100 - (isNaN(left) ? 0 : left) + "%");
+    var chip = $event.parents('.chip');
+    if (chip[0]) {
+        var left = Number(chip[0].style.left.replace(/%/g, ''));
+        chip.css('width', 100 - (isNaN(left) ? 0 : left) + "%");
+    }
 }
 
 var weekTimed = new EventMerger(weekTimedEventKey, cleanUp),
