@@ -86,21 +86,21 @@ EventMerger.prototype = {
 
 /*****************************************************************************/
 
-// merge timed events in week view
-
-function stripCalendarOwner(event_name) {
-    return event_name.trim().replace(/\(.*?\)$/g, '');
+function cleanEventTitle(event_title) {
+    return event_title.trim()
+            .replace(/\(.*\)$/, '') // Remove parentheticals at end for 1:1 lab
+            .replace(/\W/g, ''); // Remove non-ascii chars
 }
 
 function weekTimedEventKey($event) {
-    var event_name = stripCalendarOwner($event.find('dd span').text()),
+    var event_name = cleanEventTitle($event.find('dd span').text()),
         event_time = $event.find('dt').text(),
         col = $event.parents('.tg-col-eventwrapper').attr('id');
     return event_name + event_time + col;
 }
 
 function tableEventKey($event) {
-    var event_name = stripCalendarOwner($event.text()),
+    var event_name = cleanEventTitle($event.text()),
         $td = $event.parents('td'),
         days = $td.attr("colspan") || 1,
         col = $td.position().left;
