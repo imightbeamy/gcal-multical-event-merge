@@ -50,7 +50,7 @@ EventMerger.prototype = {
 			// create new semi-transparent color using the old color's rgb values
 			color = "rgba(" + rgba[1] + "," + rgba[2] + "," + rgba[3] + ",0.2)";
             gradient += color + " " + pos + "px,";
-            pos += 30;
+            pos += 6;
             gradient += color + " " + pos + "px,";
         });
         gradient = gradient.slice(0, -1);
