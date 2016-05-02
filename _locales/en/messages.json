@@ -6,5 +6,21 @@
   "appDesc": {
     "message": "Chrome extension that visually merges the same event on multiple Google Calendars into one event.",
     "description": "The description of the application, displayed in the web store."
+  },
+  "optionTitle": {
+    "message": "Event Merge Options",
+    "description": "Title of the Options window"
+  },
+  "optionStripeWidth": {
+    "message": "Width of the colored stripes",
+    "description": "Label of the option to change the with of the stripes"
+  },
+  "optionSave": {
+    "message": "Save",
+    "description": "Label of the save-button"
+  },
+  "optionSaved": {
+    "message": "Options saved.",
+    "description": "Status message when the options are saved"
   }
 }

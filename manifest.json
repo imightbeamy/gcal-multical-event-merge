@@ -16,11 +16,16 @@
     }],
   "permissions": [
         "https://www.google.com/calendar/*",
-        "https://calendar.google.com/*"
+        "https://calendar.google.com/*",
+        "storage"
   ],
   "icons": {
     "48": "icon48.png",
     "128": "icon128.png"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "chrome_style": true
   },
   "manifest_version": 2
 }

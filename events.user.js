@@ -42,16 +42,20 @@ EventMerger.prototype = {
         });
     },
     makeStripes: function ($element, colors) {
-        var gradient = "repeating-linear-gradient( 45deg,",
-            pos = 0;
-        $.each(colors, function (i, color) {
-            gradient += color + " " + pos + "px,";
-            pos += 10;
-            gradient += color + " " + pos + "px,";
+        chrome.storage.sync.get({
+                stripeWidth: 10
+            }, function(items) {
+            var gradient = "repeating-linear-gradient( 45deg,",
+                pos = 0;
+            $.each(colors, function (i, color) {
+                gradient += color + " " + pos + "px,";
+                pos += items.stripeWidth;
+                gradient += color + " " + pos + "px,";
+            });
+            gradient = gradient.slice(0, -1);
+            gradient += ")";
+            $element.css('background-image', gradient);
         });
-        gradient = gradient.slice(0, -1);
-        gradient += ")";
-        $element.css('background-image', gradient);
     },
     mergeEvents: function (name, event_set) {
         if (event_set.length > 1) {
