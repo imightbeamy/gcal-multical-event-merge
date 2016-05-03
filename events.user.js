@@ -44,13 +44,25 @@ EventMerger.prototype = {
         });
     },
     makeStripes: function ($element, colors) {
+        var background = $element.css('background-color');
+        var style_type = background.indexOf("rgba") == -1 ?
+                        'background-color' : 'color';
+        var elementColor = $element.css(style_type);
         var gradient = "repeating-linear-gradient( 135deg,",
             pos = 0;
-        $.each(colors, function (i, color) {
-			// turn color string to an rgb array
-			var rgba = color.match(/^rgb(?:a)?\(([0-9]{1,3}),\s([0-9]{1,3}),\s([0-9]{1,3})(?:,\s)?([0-9]{1,3})?\)$/);
-			// create new semi-transparent color using the old color's rgb values
-			color = "rgba(" + rgba[1] + "," + rgba[2] + "," + rgba[3] + ",0.2)";
+            
+        var uniqueColors = [];
+        $.each(colors, function(i, el){
+            if($.inArray(el, uniqueColors) === -1) uniqueColors.push(el);
+        });
+        if (uniqueColors.length == 1) {
+            return;
+        }
+        $.each(uniqueColors, function (i, color) {
+            // turn color string to an rgb array
+            var rgba = color.match(/^rgb(?:a)?\(([0-9]{1,3}),\s([0-9]{1,3}),\s([0-9]{1,3})(?:,\s)?([0-9]{1,3})?\)$/);
+            // create new semi-transparent color using the old color's rgb values
+            color = "rgba(" + rgba[1] + "," + rgba[2] + "," + rgba[3] + ",0.2)";
             gradient += color + " " + pos + "px,";
             pos += 6;
             gradient += color + " " + pos + "px,";
