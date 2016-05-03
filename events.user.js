@@ -30,9 +30,9 @@ EventMerger.prototype = {
         return event_sets;
     },
     makeAltTextColors: function ($element, colors) {
-		if (colors.length == $element.children("#gcalmemm").length)
-			return;
-		$element.prepend(" ");
+        if (colors.length == $element.children("#gcalmemm").length)
+            return;
+        $element.prepend(" ");
         $.each(colors.reverse(), function (i, color) {
             $element.prepend($("<span id='gcalmemm'>")
                 .css({
