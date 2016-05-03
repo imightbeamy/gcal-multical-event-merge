@@ -46,7 +46,7 @@ EventMerger.prototype = {
 		var style_type = background.indexOf("rgba") == -1 ?
                         'background-color' : 'color';
 		var elementColor = $element.css(style_type);
-        var gradient = "repeating-linear-gradient( 135deg,",
+        var gradient = "repeating-linear-gradient( 45deg,",
             pos = 0;
 			
 		var uniqueColors = [];
