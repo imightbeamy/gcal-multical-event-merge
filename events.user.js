@@ -42,6 +42,25 @@ EventMerger.prototype = {
         });
     },
     makeStripes: function ($element, colors) {
+		// make sure that we didn't already process this element
+		if ($element.children("#gcalmemm").length != 0)
+			return;
+		$element.prepend($("<span id='gcalmemm'>"));
+		
+		// add "[Merged]" to the event title, event element varies depending on different views
+		var foundDailyEvent = $element.find(".rb-ni");						// daily event
+		var foundRegularWithLink = $element.find("span.evt-lk");			// regular event with link
+		var foundRegularWithoutLink = $element.find("span.cbrdcc");			// regular event without link
+		
+		// in order to not add "[Merged]" twice when the event is daily and with/without a link, we simply
+		// add the "[Merged]" text on the daily event if this is a daily event, or if not we put the text on the regular event
+		if (foundDailyEvent.length != 0) {
+			foundDailyEvent.html(function(i,h){return h+" [Merged]";});	
+		} else {
+			foundRegularWithLink.html(function(i,h){return h+" [Merged]";});
+			foundRegularWithoutLink.html(function(i,h){return h+" [Merged]";});	
+		}
+		
         var gradient = "repeating-linear-gradient( 45deg,",
             pos = 0;
         $.each(colors, function (i, color) {
@@ -89,6 +108,7 @@ EventMerger.prototype = {
 function cleanEventTitle(event_title) {
     return event_title.trim()
             .replace(/\(.*\)$/, '') // Remove parentheticals at end for 1:1 lab
+			.replace(/\[Merged\]/g,'') // Remove [Merged] string
             .replace(/\W/g, ''); // Remove non-ascii chars
 }
 
