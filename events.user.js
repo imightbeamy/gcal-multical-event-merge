@@ -15,7 +15,7 @@
 function EventMerger(key_function, clean_up_function, isMonthView) {
     this.makeKey = key_function;
     this.cleanUp = clean_up_function;
-	this.isMonthView = isMonthView;
+    this.isMonthView = isMonthView;
 }
 
 EventMerger.prototype = {
@@ -56,82 +56,82 @@ EventMerger.prototype = {
     },
     mergeEvents: function (name, event_set) {
         if (event_set.length > 1) {
-			// keep the first event, which is our calendar's event, so we will merge other events into it
+            // keep the first event, which is our calendar's event, so we will merge other events into it
             var keep = event_set[0];
-			// take all other events
-			var toMerge = event_set.slice(1,event_set.length);
-			
-			// array for storing the hidden events so we can later show them again when hovering over the kept event
-			var hiddenEvents = [];
-			
-			// the total height of the events merged, will be used on daily events in order to know when to re-hide them (when mouse goes over the rect surrounding all merged daily events)
-			var totalHeights = keep.height();
-			
-			// go over events and hide them
-			// also, in non-month view, set a mouse event for re-hiding them when the mouse leaves the main event (our calendar's event)
-            $(toMerge).each(function () {				
-				if (!this.isMonthView) {
-					// add event's height to total height
-					if ($(this).offset().top != keep.offset().top) {
-						totalHeights += $(this).height();			
-					}						
-					
-					// save the hidden event
-					hiddenEvents.push($(this).parent());
-					
-					// hide this event
-					$(this).parent().css('display','none');
-						
-					$(this).parent().mouseleave(function(e) {
-						var minX = keep.offset().left;
-						var maxX = minX + keep.width();
-						var minY = keep.offset().top;
-						var maxY = minY + totalHeights;
+            // take all other events
+            var toMerge = event_set.slice(1,event_set.length);
+            
+            // array for storing the hidden events so we can later show them again when hovering over the kept event
+            var hiddenEvents = [];
+            
+            // the total height of the events merged, will be used on daily events in order to know when to re-hide them (when mouse goes over the rect surrounding all merged daily events)
+            var totalHeights = keep.height();
+            
+            // go over events and hide them
+            // also, in non-month view, set a mouse event for re-hiding them when the mouse leaves the main event (our calendar's event)
+            $(toMerge).each(function () {                
+                if (!this.isMonthView) {
+                    // add event's height to total height
+                    if ($(this).offset().top != keep.offset().top) {
+                        totalHeights += $(this).height();            
+                    }                        
+                    
+                    // save the hidden event
+                    hiddenEvents.push($(this).parent());
+                    
+                    // hide this event
+                    $(this).parent().css('display','none');
+                        
+                    $(this).parent().mouseleave(function(e) {
+                        var minX = keep.offset().left;
+                        var maxX = minX + keep.width();
+                        var minY = keep.offset().top;
+                        var maxY = minY + totalHeights;
 
-						if ((e.clientX >= minX && e.clientX <= maxX) && (e.clientY >= minY && e.clientY <= maxY)) {
-							return;
-						}
-						hiddenEvents.forEach(function(event) {event.css('display','none');});
-					});
-				}
+                        if ((e.clientX >= minX && e.clientX <= maxX) && (e.clientY >= minY && e.clientY <= maxY)) {
+                            return;
+                        }
+                        hiddenEvents.forEach(function(event) {event.css('display','none');});
+                    });
+                }
             });
-			
-			// in non-month view, set a mouse event for when hovering the main event (our calendar's event) the merged events will show up
-			if (!this.isMonthView) {
-				keep.hover(function(e) {
-					hiddenEvents.forEach(function(event) {
-						  event.css('display','block');
-						});
-					},function(e) {				
-						var minX = keep.offset().left;
-						var maxX = minX + keep.width();
-						var minY = keep.offset().top;
-						var maxY = minY + totalHeights;
+            
+            // in non-month view, set a mouse event for when hovering the main event (our calendar's event) the merged events will show up
+            if (!this.isMonthView) {
+                keep.hover(function(e) {
+                    hiddenEvents.forEach(function(event) {
+                          event.css('display','block');
+                        });
+                    },function(e) {                
+                        var minX = keep.offset().left;
+                        var maxX = minX + keep.width();
+                        var minY = keep.offset().top;
+                        var maxY = minY + totalHeights;
 
-						if ((e.clientX >= minX && e.clientX <= maxX) && (e.clientY >= minY && e.clientY <= maxY)) {
-							return;
-						}
-						hiddenEvents.forEach(function(event) {event.css('display','none');});
-						
-				});
-			}
-			
-			// retrieve colors of all events
-			var background = keep.css('background-color');
+                        if ((e.clientX >= minX && e.clientX <= maxX) && (e.clientY >= minY && e.clientY <= maxY)) {
+                            return;
+                        }
+                        hiddenEvents.forEach(function(event) {event.css('display','none');});
+                        
+                });
+            }
+            
+            // retrieve colors of all events
+            var background = keep.css('background-color');
             var style_type = background.indexOf("rgba") == -1 ?
                         'background-color' : 'color';
             var colors = $.map(event_set, function (event) {
                 return $(event).css(style_type);
             });
-			
-			// do the coloring based on background type
+            
+            // do the coloring based on background type
             if (style_type == 'background-color') {
                 this.makeStripes(keep, colors);
             } else {
                 this.makeAltTextColors(keep, colors);
             }
-			
-			// clean up
+            
+            // clean up
             this.cleanUp && this.cleanUp(keep);
         }
     },
