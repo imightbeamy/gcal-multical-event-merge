@@ -30,16 +30,36 @@ EventMerger.prototype = {
         return event_sets;
     },
     makeAltTextColors: function ($element, colors) {
-        $element.prepend(" ");
-        $.each(colors.reverse(), function (i, color) {
-            $element.prepend($("<span>")
-                .css({
-                    'background-color': color,
-                    'width': '4px',
-                    'height': '12px',
-                    'display': 'inline-block'
-                }));
-        });
+        // check whether the event is wrapped inside a te-rev table (could be for reversing the event text?)
+        if ($element.children("table.te-rev").length != 0) {
+            // the event is wrapped, so add the altTextColors inside a <td> element in the table before the event text
+            var trElement = $($element.children("table.te-rev")[0]).find("tr");
+            if (trElement.length == 0)
+                return; // we couldn't find the <tr> element in the table - shouldn't happen
+            trElement = $(trElement[0]);
+            trElement.prepend("&nbsp;");
+            $.each(colors.reverse(), function (i, color) {
+                trElement.prepend($("<td>"), $("<span>")
+                    .css({
+                        'background-color': color,
+                        'width': '4px',
+                        'height': '12px',
+                        'display': 'inline-block'
+                    }));
+            });
+        } else {
+            // the event is not wrapped, add the altTextColor before the event text
+            $element.prepend(" ");
+            $.each(colors.reverse(), function (i, color) {
+                $element.prepend($("<span>")
+                    .css({
+                        'background-color': color,
+                        'width': '4px',
+                        'height': '12px',
+                        'display': 'inline-block'
+                    }));
+            });
+        }
     },
     makeStripes: function ($element, colors) {
         var gradient = "repeating-linear-gradient( 45deg,",
