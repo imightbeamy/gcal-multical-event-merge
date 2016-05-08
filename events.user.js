@@ -125,6 +125,9 @@ EventMerger.prototype = {
             // the total height of the events merged, will be used on daily events in order to know when to re-hide them (when mouse goes over the rect surrounding all merged daily events)
             var totalHeights = keep.height();
             
+            // the rightest point of the event that is on the right
+            var mostRightPoint = 0;
+
             // go over events and hide them
             // also, in non-month view, set a mouse event for re-hiding them when the mouse leaves the main event (our calendar's event)
             $(toMerge).each(function () {                
@@ -133,6 +136,13 @@ EventMerger.prototype = {
                     if ($(this).offset().top != keep.offset().top) {
                         totalHeights += $(this).height();            
                     }                        
+                    // check if this event is on the right of all previous events, if so, save it's rightest point
+                    if ($(this).offset().left != keep.offset().left) {
+                        var elementRight = (($(this).offset().left + $(this).outerWidth()));
+                        if (elementRight > mostRightPoint) {
+                            mostRightPoint = elementRight;
+                        }
+                    }
                     
                     // save the hidden event
                     hiddenEvents.push($(this).parent());
@@ -190,7 +200,7 @@ EventMerger.prototype = {
             }
             
             // clean up
-            this.cleanUp && this.cleanUp(keep);
+            this.cleanUp && this.cleanUp(keep, mostRightPoint);
         }
     },
     mergeSets: function ($events) {
@@ -233,11 +243,10 @@ function monthTimedEventKey($event) {
     return monthAllDayEventKey($event) + time;
 }
 
-function cleanUp($event) {
+function cleanUp($event, mostRightPoint) {
     var chip = $event.parents('.chip');
     if (chip[0]) {
-        var left = Number(chip[0].style.left.replace(/%/g, ''));
-        chip.css('width', 100 - (isNaN(left) ? 0 : left) + "%");
+        $(chip[0]).width(mostRightPoint - $event.offset().left);
     }
 }
 
