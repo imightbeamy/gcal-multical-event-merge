@@ -63,19 +63,12 @@ EventMerger.prototype = {
             
             // array for storing the hidden events so we can later show them again when hovering over the kept event
             var hiddenEvents = [];
-            
-            // the total height of the events merged, will be used on daily events in order to know when to re-hide them (when mouse goes over the rect surrounding all merged daily events)
-            var totalHeights = keep.height();
-            
+                        
             // go over events and hide them
             // also, in non-month view, set a mouse event for re-hiding them when the mouse leaves the main event (our calendar's event)
             $(toMerge).each(function () {                
                 if (!this.isMonthView) {
-                    // add event's height to total height
-                    if ($(this).offset().top != keep.offset().top) {
-                        totalHeights += $(this).height();            
-                    }                        
-                    
+                
                     // save the hidden event
                     hiddenEvents.push($(this).parent());
                     
@@ -83,12 +76,10 @@ EventMerger.prototype = {
                     $(this).parent().css('display','none');
                         
                     $(this).parent().mouseleave(function(e) {
-                        var minX = keep.offset().left;
-                        var maxX = minX + keep.width();
-                        var minY = keep.offset().top;
-                        var maxY = minY + totalHeights;
-
-                        if ((e.clientX >= minX && e.clientX <= maxX) && (e.clientY >= minY && e.clientY <= maxY)) {
+                        // check if we left the merged event and the merged events
+                        var stillInMergedEvent = false;
+                        hiddenEvents.forEach(function(event) {if (event[0].contains(e.relatedTarget)) stillInMergedEvent = true;});
+                        if (stillInMergedEvent) {
                             return;
                         }
                         hiddenEvents.forEach(function(event) {event.css('display','none');});
@@ -102,13 +93,11 @@ EventMerger.prototype = {
                     hiddenEvents.forEach(function(event) {
                           event.css('display','block');
                         });
-                    },function(e) {                
-                        var minX = keep.offset().left;
-                        var maxX = minX + keep.width();
-                        var minY = keep.offset().top;
-                        var maxY = minY + totalHeights;
-
-                        if ((e.clientX >= minX && e.clientX <= maxX) && (e.clientY >= minY && e.clientY <= maxY)) {
+                    },function(e) {                                        
+                        // check if we left the merged event and the merged events
+                        var stillInMergedEvent = false;
+                        hiddenEvents.forEach(function(event) {if (event[0].contains(e.relatedTarget)) stillInMergedEvent = true;});
+                        if (stillInMergedEvent) {
                             return;
                         }
                         hiddenEvents.forEach(function(event) {event.css('display','none');});
