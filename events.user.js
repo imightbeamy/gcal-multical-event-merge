@@ -67,6 +67,12 @@ EventMerger.prototype = {
 
             var keep = event_set.shift();
             $(event_set).each(function () {
+				var previousEvent = $(this).parent().prev()[0];
+                if ((previousEvent != undefined) && 
+                    (previousEvent != keep.parent()[0]) && 
+                    (previousEvent.className == "rsvp-no-bg")) {
+                    previousEvent.remove();
+                }
                 $(this).parent().css('visibility', 'hidden');
             });
 
