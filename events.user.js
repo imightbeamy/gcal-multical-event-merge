@@ -100,12 +100,13 @@ function cleanEventTitle(event_title) {
 
 function weekTimedEventKey($event) {
     var eventTitles = $event.find('dd span');
-    var eventTitle = "";
+	var uniqueEventTitles = [];
     eventTitles.each(function(i, el) {
-                        if (el.textContent != eventTitle) {
-                            eventTitle += el.textContent;
+                        if (uniqueEventTitles.indexOf(el.textContent) == -1) {
+							uniqueEventTitles.push(el.textContent);
                         }
                     });
+	var eventTitle = uniqueEventTitles.join('');
     var event_name = cleanEventTitle(eventTitle),
         event_time = $event.find('dt').text(),
         col = $event.parents('.tg-col-eventwrapper').attr('id');
