@@ -230,7 +230,7 @@ function weekTimedEventKey($event) {
                         if (uniqueEventTitles.indexOf(el.textContent) == -1) {
                             uniqueEventTitles.push(el.textContent);
                         }
-                    });
+                    }});
 	// set event title and clean it up
     var eventTitle = uniqueEventTitles.join('');
     var event_name = cleanEventTitle(eventTitle),
