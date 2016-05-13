@@ -135,7 +135,12 @@ function cleanUp($event) {
     if (chip[0]) {
         var left = Number(chip[0].style.left.replace(/%/g, ''));
         chip.css('width', 100 - (isNaN(left) ? 0 : left) + "%");
-    }
+		var keepPreviousEvent = $event.parent().prev()[0];
+		if ((keepPreviousEvent != undefined) && 
+			(keepPreviousEvent.className == "rsvp-no-bg")) {
+			$(keepPreviousEvent).css('width', 100 - (isNaN(left) ? 0 : left) + "%");
+		}
+    }	
 }
 
 var weekTimed = new EventMerger(weekTimedEventKey, cleanUp),
