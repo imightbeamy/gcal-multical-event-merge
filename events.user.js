@@ -124,10 +124,22 @@ EventMerger.prototype = {
 
             // the rightest point of the event that is on the right
             var mostRightPoint = 0;
-
+            
             // go over events and hide them
             // also, in non-month view, set a mouse event for re-hiding them when the mouse leaves the main event (our calendar's event)
-            $(toMerge).each(function () {                
+            $(toMerge).each(function () {
+				// check if this event is an rsvp-no event and if it has a white box on it, move the white box to be inside the event so it will get merged as well
+                var previousEvent = $(this).parent().prev()[0];
+                if ((previousEvent != undefined) && 
+                    (previousEvent != keep.parent()[0]) && 
+                    (previousEvent.className == "rsvp-no-bg")) {
+                    previousEvent.remove();
+					$(previousEvent).css("top","0px");
+					$(previousEvent).css("left","0px");
+					$(previousEvent).css("width","100%");
+                    $(this).parent().prepend(previousEvent);
+                }
+
                 if (!this.isMonthView) {
                     // check if this event is on the right of all previous events, if so, save it's rightest point
                     if ($(this).offset().left != keep.offset().left) {
@@ -207,7 +219,21 @@ function cleanEventTitle(event_title) {
 }
 
 function weekTimedEventKey($event) {
-    var event_name = cleanEventTitle($event.find('dd span').text()),
+	// first, take the 'dd span' elements in the event
+    var eventTitles = $event.find('dd span');
+    var eventTitle = "";
+    var uniqueEventTitles = [];
+	// save only the unique ones
+    eventTitles.each(function(i, el) {
+                        if (el.textContent != eventTitle) {
+                            eventTitle += el.textContent;
+                        if (uniqueEventTitles.indexOf(el.textContent) == -1) {
+                            uniqueEventTitles.push(el.textContent);
+                        }
+                    });
+	// set event title and clean it up
+    var eventTitle = uniqueEventTitles.join('');
+    var event_name = cleanEventTitle(eventTitle),
         event_time = $event.find('dt').text(),
         col = $event.parents('.tg-col-eventwrapper').attr('id');
     return event_name + event_time + col;
@@ -233,9 +259,16 @@ function monthTimedEventKey($event) {
 
 function cleanUp($event, mostRightPoint) {
     var chip = $event.parents('.chip');
+	// fix event width
     if (chip[0]) {
         $(chip[0]).width(mostRightPoint - $event.offset().left);
     }
+	// fix white box width, on event with rsvp-no
+	var keepPreviousEvent = $event.parent().prev()[0];
+	if ((keepPreviousEvent != undefined) && 
+		(keepPreviousEvent.className == "rsvp-no-bg")) {
+		$(keepPreviousEvent).width(mostRightPoint - $(keepPreviousEvent).offset().left);
+	}
 }
 
 var weekTimed = new EventMerger(weekTimedEventKey, cleanUp, false),
