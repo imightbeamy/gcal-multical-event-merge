@@ -141,6 +141,9 @@ EventMerger.prototype = {
                 }
 
                 if (!this.isMonthView) {
+					// unhide this event, incase it is hidden, since we use it's dimensions for calculations
+                    $(this).parent().css('display','block');
+					
                     // check if this event is on the right of all previous events, if so, save it's rightest point
                     if ($(this).offset().left != keep.offset().left) {
                         var elementRight = (($(this).offset().left + $(this).outerWidth()));
