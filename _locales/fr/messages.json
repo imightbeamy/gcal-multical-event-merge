@@ -4,7 +4,7 @@
     "description": "The title of the application, displayed in the web store."
   },
   "appDesc": {
-    "message": "",
+    "message": "Une extension Chrome qui fusionne visuellement les évènements identiques de plusieurs calendriers Google en un seul.",
     "description": "The description of the application, displayed in the web store."
   }
 }
