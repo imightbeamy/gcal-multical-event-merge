@@ -57,7 +57,7 @@ EventMerger.prototype = {
         if (event_set.length > 1) {
 
             var background = $(event_set[0]).css('background-color');
-            // If the background is trasparent, use the text color
+            // If the background is transparent, use the text color
             var style_type = background.indexOf("rgba") == -1 ?
                         'background-color' : 'color';
 
