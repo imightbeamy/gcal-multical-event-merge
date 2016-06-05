@@ -89,7 +89,7 @@ EventMerger.prototype = {
 function cleanEventTitle(event_title) {
     return event_title.trim()
             .replace(/\(.*\)$/, '') // Remove parentheticals at end for 1:1 lab
-            .replace(/\W/g, ''); // Remove non-ascii chars
+            .replace(/[\x00-\x2f\x3a-\x40\x5b-\x60\x7b-\xff]/g,''); // Remove non alphanumeric chars in the ascii range
 }
 
 function weekTimedEventKey($event) {
