@@ -67,6 +67,12 @@ EventMerger.prototype = {
 
             var keep = event_set.shift();
             $(event_set).each(function () {
+				var previousEvent = $(this).parent().prev()[0];
+                if ((previousEvent != undefined) && 
+                    (previousEvent != keep.parent()[0]) && 
+                    (previousEvent.className == "rsvp-no-bg")) {
+                    previousEvent.remove();
+                }
                 $(this).parent().css('visibility', 'hidden');
             });
 
@@ -93,7 +99,15 @@ function cleanEventTitle(event_title) {
 }
 
 function weekTimedEventKey($event) {
-    var event_name = cleanEventTitle($event.find('dd span').text()),
+    var eventTitles = $event.find('dd span');
+	var uniqueEventTitles = [];
+    eventTitles.each(function(i, el) {
+                        if (uniqueEventTitles.indexOf(el.textContent) == -1) {
+							uniqueEventTitles.push(el.textContent);
+                        }
+                    });
+	var eventTitle = uniqueEventTitles.join('');
+    var event_name = cleanEventTitle(eventTitle),
         event_time = $event.find('dt').text(),
         col = $event.parents('.tg-col-eventwrapper').attr('id');
     return event_name + event_time + col;
@@ -122,7 +136,12 @@ function cleanUp($event) {
     if (chip[0]) {
         var left = Number(chip[0].style.left.replace(/%/g, ''));
         chip.css('width', 100 - (isNaN(left) ? 0 : left) + "%");
-    }
+		var keepPreviousEvent = $event.parent().prev()[0];
+		if ((keepPreviousEvent != undefined) && 
+			(keepPreviousEvent.className == "rsvp-no-bg")) {
+			$(keepPreviousEvent).css('width', 100 - (isNaN(left) ? 0 : left) + "%");
+		}
+    }	
 }
 
 var weekTimed = new EventMerger(weekTimedEventKey, cleanUp),
