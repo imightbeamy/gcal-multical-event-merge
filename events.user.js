@@ -30,9 +30,11 @@ EventMerger.prototype = {
         return event_sets;
     },
     makeAltTextColors: function ($element, colors) {
-        $element.prepend(" ");
+		if (colors.length == $element.children("#gcalmemm").length)
+			return;
+		$element.prepend(" ");
         $.each(colors.reverse(), function (i, color) {
-            $element.prepend($("<span>")
+            $element.prepend($("<span id='gcalmemm'>")
                 .css({
                     'background-color': color,
                     'width': '4px',
@@ -67,7 +69,7 @@ EventMerger.prototype = {
 
             var keep = event_set.shift();
             $(event_set).each(function () {
-                $(this).parent().css('visibility', 'hidden');
+                $(this).parent().css('display','none');
             });
 
             if (style_type == 'background-color') {
@@ -89,7 +91,7 @@ EventMerger.prototype = {
 function cleanEventTitle(event_title) {
     return event_title.trim()
             .replace(/\(.*\)$/, '') // Remove parentheticals at end for 1:1 lab
-            .replace(/\W/g, ''); // Remove non-ascii chars
+            .replace(/[\x00-\x2f\x3a-\x40\x5b-\x60\x7b-\xff]/g,''); // Remove non alphanumeric chars in the ascii range
 }
 
 function weekTimedEventKey($event) {
