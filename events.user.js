@@ -70,6 +70,7 @@ EventMerger.prototype = {
             var keep = event_set.shift();
             $(event_set).each(function () {
                 $(this).parent().css('visibility', 'hidden');
+                $(this).parent().find('*').css('visibility', 'hidden');
             });
 
             if (style_type == 'background-color') {
