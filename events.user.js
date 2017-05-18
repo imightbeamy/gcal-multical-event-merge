@@ -133,26 +133,30 @@ var weekTimed = new EventMerger(weekTimedEventKey, cleanUp),
     monthTimed = new EventMerger(monthTimedEventKey),
     monthAllDay = new EventMerger(monthAllDayEventKey);
 
-var merging_main = false;
-$(document).on("DOMNodeInserted", "#gridcontainer", function () {
-    if (!merging_main) {
-        merging_main = true;
-        var grid_container = $(this);
-        weekTimed.mergeSets(grid_container.find('dl'));
-        weekAllDay.mergeSets(grid_container.find(".wk-weektop .rb-n"));
-        monthTimed.mergeSets(grid_container.find(".te"));
-        monthAllDay.mergeSets(grid_container.find(".mv-event-container .rb-n"));
-        merging_main = false;
-    }
-});
+chrome.runtime.sendMessage({}, function(response) {
+  if (response.enabled) {
+    var merging_main = false;
+    $(document).on("DOMNodeInserted", "#gridcontainer", function () {
+        if (!merging_main) {
+            merging_main = true;
+            var grid_container = $(this);
+            weekTimed.mergeSets(grid_container.find('dl'));
+            weekAllDay.mergeSets(grid_container.find(".wk-weektop .rb-n"));
+            monthTimed.mergeSets(grid_container.find(".te"));
+            monthAllDay.mergeSets(grid_container.find(".mv-event-container .rb-n"));
+            merging_main = false;
+        }
+    });
 
-var merging_find_time = false;
-$(document).on("DOMNodeInserted", "#scTgTable", function (e) {
-    if (!merging_find_time) {
-        merging_find_time = true;
-        var find_time_container = $(this);
-        weekTimed.mergeSets(find_time_container.find('dl'));
-        weekAllDay.mergeSets(find_time_container.find(".rb-n"));
-        merging_find_time = false;
-    }
+    var merging_find_time = false;
+    $(document).on("DOMNodeInserted", "#scTgTable", function (e) {
+        if (!merging_find_time) {
+            merging_find_time = true;
+            var find_time_container = $(this);
+            weekTimed.mergeSets(find_time_container.find('dl'));
+            weekAllDay.mergeSets(find_time_container.find(".rb-n"));
+            merging_find_time = false;
+        }
+    });
+  }
 });
