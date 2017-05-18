@@ -31,8 +31,10 @@ EventMerger.prototype = {
     },
     makeAltTextColors: function ($element, colors) {
         $element.prepend(" ");
+        $element.find(".color-bar").remove();
         $.each(colors.reverse(), function (i, color) {
             $element.prepend($("<span>")
+                .addClass('color-bar')
                 .css({
                     'background-color': color,
                     'width': '4px',
@@ -93,7 +95,7 @@ function cleanEventTitle(event_title) {
 }
 
 function weekTimedEventKey($event) {
-    var event_name = cleanEventTitle($event.find('dd span').text()),
+    var event_name = cleanEventTitle($event.find('dd .evt-lk').text()),
         event_time = $event.find('dt').text(),
         col = $event.parents('.tg-col-eventwrapper').attr('id');
     return event_name + event_time + col;
