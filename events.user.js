@@ -68,7 +68,17 @@ EventMerger.prototype = {
             });
 
             var keep = event_set.shift();
+
+            // the rightest point of the event that is on the right
+            var mostRightPoint = 0;
+
             $(event_set).each(function () {
+                if ($(this).offset().left != keep.offset().left) {
+                    var elementRight = (($(this).offset().left + $(this).outerWidth()));
+                    if (elementRight > mostRightPoint) {
+                        mostRightPoint = elementRight;
+                    }
+                }
                 $(this).parent().css('visibility', 'hidden');
                 $(this).parent().find('*').css('visibility', 'hidden');
             });
@@ -78,7 +88,7 @@ EventMerger.prototype = {
             } else {
                 this.makeAltTextColors(keep, colors);
             }
-            this.cleanUp && this.cleanUp(keep);
+            this.cleanUp && this.cleanUp(keep, mostRightPoint);
         }
     },
     mergeSets: function ($events) {
@@ -119,11 +129,10 @@ function monthTimedEventKey($event) {
     return monthAllDayEventKey($event) + time;
 }
 
-function cleanUp($event) {
+function cleanUp($event, mostRightPoint) {
     var chip = $event.parents('.chip');
     if (chip[0]) {
-        var left = Number(chip[0].style.left.replace(/%/g, ''));
-        chip.css('width', 100 - (isNaN(left) ? 0 : left) + "%");
+        $(chip[0]).width(mostRightPoint - $event.offset().left);
     }
 }
 
