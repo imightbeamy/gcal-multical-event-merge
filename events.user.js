@@ -44,9 +44,21 @@ EventMerger.prototype = {
         });
     },
     makeStripes: function ($element, colors) {
+        var background = $element.css('background-color');
+		var style_type = background.indexOf("rgba") == -1 ?
+                        'background-color' : 'color';
+		var elementColor = $element.css(style_type);
         var gradient = "repeating-linear-gradient( 45deg,",
             pos = 0;
-        $.each(colors, function (i, color) {
+			
+		var uniqueColors = [];
+		$.each(colors, function(i, el){
+			if($.inArray(el, uniqueColors) === -1) uniqueColors.push(el);
+		});
+		if (uniqueColors.length == 1) {
+			return;
+		}
+		$.each(uniqueColors, function (i, color) {
             gradient += color + " " + pos + "px,";
             pos += 10;
             gradient += color + " " + pos + "px,";
