@@ -71,6 +71,15 @@ EventMerger.prototype = {
             $(event_set).each(function () {
                 $(this).parent().css('visibility', 'hidden');
                 $(this).parent().find('*').css('visibility', 'hidden');
+                if ($(this).hasClass('rb-n')) {
+                    var row = $(this).parents('tr:first');
+                    var visible_entries = row.find('.rb-n').filter(function() {
+                        return $(this).css('visibility') != "hidden";
+                    });
+                    if (visible_entries.length == 0) {
+                        row.css('display', 'none');
+                    }
+                }
             });
 
             if (style_type == 'background-color') {
