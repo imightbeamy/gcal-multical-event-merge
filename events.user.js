@@ -44,11 +44,15 @@ EventMerger.prototype = {
         });
     },
     makeStripes: function ($element, colors) {
-        var gradient = "repeating-linear-gradient( 45deg,",
+        var gradient = "repeating-linear-gradient( 135deg,",
             pos = 0;
         $.each(colors, function (i, color) {
+            // turn color string to an rgb array
+            var rgba = color.match(/^rgb(?:a)?\(([0-9]{1,3}),\s([0-9]{1,3}),\s([0-9]{1,3})(?:,\s)?([0-9]{1,3})?\)$/);
+            // create new semi-transparent color using the old color's rgb values
+            color = "rgba(" + rgba[1] + "," + rgba[2] + "," + rgba[3] + ",0.2)";
             gradient += color + " " + pos + "px,";
-            pos += 10;
+            pos += 6;
             gradient += color + " " + pos + "px,";
         });
         gradient = gradient.slice(0, -1);
