@@ -16,7 +16,8 @@
     }],
   "permissions": [
         "https://www.google.com/calendar/*",
-        "https://calendar.google.com/*"
+        "https://calendar.google.com/*",
+        "storage"
   ],
   "background": {
     "scripts": ["background.js"],
@@ -27,6 +28,10 @@
   },
   "icons": {
     "48": "icon.png"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "chrome_style": true
   },
   "manifest_version": 2
 }
