@@ -8,3 +8,8 @@ OR
 ### [Install with Greasemonkey](https://github.com/imightbeamy/gcal-multical-event-merge/raw/master/events.user.js)
 
 ![hackweek](images/examples.png)
+
+
+## Clasic UI
+
+For refreance, [here's the last commit before changing to support the newer UI.](https://github.com/imightbeamy/gcal-multical-event-merge/blob/bed9a531157e14bf86463ea7970f8ce0ef76db1d/events.user.js)
