@@ -36,7 +36,7 @@ const merge = (mainCalender) => {
   days.forEach((day, index) => {
     const events = Array.from(day.querySelectorAll("[role=\"button\"]"));
     events.forEach(event => {
-      let eventKey = event.querySelector("div:nth-child(2)").textContent.replace(/\\s+/g,"");
+      let eventKey = event.querySelector('[aria-hidden="true"]').textContent.replace(/\\s+/g,"");
       eventKey = index + eventKey;
       eventSets[eventKey] = eventSets[eventKey] || [];
       eventSets[eventKey].push(event);
@@ -44,23 +44,29 @@ const merge = (mainCalender) => {
   });
 
   Object.values(eventSets)
-    .filter(events => events.length > 1)
     .forEach(events => {
-      const colors = events.map(event => event.style.backgroundColor || event.style.borderColor);
-      const gradient = stripesGradient(colors);
+      if (events.length > 1) {
+        const colors = events.map(event => event.style.backgroundColor || event.style.borderColor);
+        const gradient = stripesGradient(colors);
 
-      events.sort((e1, e2) => dragType(e1) - dragType(e2));
-      const styles = events.map(window.getComputedStyle);
-      const eventToKeep = events.shift();
-      eventToKeep.style.backgroundImage = gradient;
-      eventToKeep.style.left = Math.min.apply(Math, styles.map(s => parsePixels(s.left))) + 'px';
-      eventToKeep.style.right = Math.min.apply(Math, styles.map(s => parsePixels(s.right))) + 'px';
-      eventToKeep.style.visibility = "visible";
-      eventToKeep.style.width = null;
+        events.sort((e1, e2) => dragType(e1) - dragType(e2));
+        const styles = events.map(window.getComputedStyle);
+        const eventToKeep = events.shift();
+        eventToKeep.style.backgroundImage = gradient;
+        eventToKeep.style.left = Math.min.apply(Math, styles.map(s => parsePixels(s.left))) + 'px';
+        eventToKeep.style.right = Math.min.apply(Math, styles.map(s => parsePixels(s.right))) + 'px';
+        eventToKeep.style.visibility = "visible";
+        eventToKeep.style.width = null;
+        eventToKeep.style.border = "solid 1px #FFF"
 
-      events.forEach(event => {
-        event.style.visibility = "hidden";
-      });
+        events.forEach(event => {
+          event.style.visibility = "hidden";
+        });
+      } else {
+        events.forEach(event => {
+          event.style.visibility = "visible";
+        });
+      }
     });
 }
 
@@ -70,12 +76,9 @@ const init = (mutationsList) => {
     .filter(node => node.matches && node.matches("[role=\"main\"]"))[0];
 
   if (main) {
-    const mainCalender = main.querySelector("[role=\"grid\"] > [role=\"presentation\"][data-type=\"1\"]");
-    if (mainCalender) {
-      merge(mainCalender);
-      new MutationObserver(() => merge(mainCalender))
-        .observe(mainCalender, { childList: true, subtree: true, attributes: true });
-    }
+    merge(main);
+    new MutationObserver(() => merge(main))
+      .observe(main, { childList: true, subtree: true, attributes: true });
   }
 }
 
