@@ -36,7 +36,11 @@ const merge = (mainCalender) => {
   days.forEach((day, index) => {
     const events = Array.from(day.querySelectorAll("[data-eventid][role=\"button\"], [data-eventid] [role=\"button\"]"));
     events.forEach(event => {
-      let eventKey = event.querySelector('[aria-hidden="true"]').textContent.replace(/\\s+/g,"");
+      const eventTitleEl = event.querySelector('[aria-hidden="true"]');
+      if (!eventTitleEl) {
+        return;
+      }
+      let eventKey = eventTitleEl.textContent.replace(/\\s+/g,"");
       eventKey = index + eventKey;
       eventSets[eventKey] = eventSets[eventKey] || [];
       eventSets[eventKey].push(event);
