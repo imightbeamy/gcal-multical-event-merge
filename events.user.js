@@ -28,6 +28,7 @@ const stripesGradient = (colors) => {
 };
 
 const dragType = e => parseInt(e.dataset.dragsourceType);
+const parsePixels = px => parseInt(px.replace('px', ''));
 
 const merge = (mainCalender) => {
   const eventSets = {};
@@ -48,18 +49,14 @@ const merge = (mainCalender) => {
       const colors = events.map(event => event.style.backgroundColor || event.style.borderColor);
       const gradient = stripesGradient(colors);
 
-      const left = events[0].style.left;
       events.sort((e1, e2) => dragType(e1) - dragType(e2));
+      const styles = events.map(window.getComputedStyle);
       const eventToKeep = events.shift();
       eventToKeep.style.backgroundImage = gradient;
-
-      let width = Number(events[0].style.width.replace(/%/g, ""));
-      if (!isNaN(width)) {
-        width = width * (events.length + 1);
-        width = Math.min(width, 100);
-        eventToKeep.style.width = width + "%";
-      }
-      eventToKeep.style.left = left;
+      eventToKeep.style.left = Math.min.apply(Math, styles.map(s => parsePixels(s.left))) + 'px';
+      eventToKeep.style.right = Math.min.apply(Math, styles.map(s => parsePixels(s.right))) + 'px';
+      eventToKeep.style.visibility = "visible";
+      eventToKeep.style.width = null;
 
       events.forEach(event => {
         event.style.visibility = "hidden";
