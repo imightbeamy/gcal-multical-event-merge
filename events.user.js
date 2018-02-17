@@ -13,13 +13,13 @@
 
 console.log("event merge");
 
-const stripesGradient = (colors) => {
-  let gradient = "repeating-linear-gradient( 45deg,";
+const stripesGradient = (colors, width, angle) => {
+  let gradient = `repeating-linear-gradient( ${angle}deg,`;
   let pos = 0;
 
   colors.forEach(color => {
     gradient += color + " " + pos + "px,";
-    pos += 10;
+    pos += width;
     gradient += color + " " + pos + "px,";
   });
   gradient = gradient.slice(0, -1);
@@ -34,7 +34,7 @@ const merge = (mainCalender) => {
   const eventSets = {};
   const days = mainCalender.querySelectorAll("[role=\"gridcell\"]");
   days.forEach((day, index) => {
-    const events = Array.from(day.querySelectorAll("[role=\"button\"]"));
+    const events = Array.from(day.querySelectorAll("[data-eventid][role=\"button\"], [data-eventid] [role=\"button\"]"));
     events.forEach(event => {
       let eventKey = event.querySelector('[aria-hidden="true"]').textContent.replace(/\\s+/g,"");
       eventKey = index + eventKey;
@@ -46,22 +46,38 @@ const merge = (mainCalender) => {
   Object.values(eventSets)
     .forEach(events => {
       if (events.length > 1) {
-        const colors = events.map(event => event.style.backgroundColor || event.style.borderColor);
-        const gradient = stripesGradient(colors);
+        const colors = events.map(event => event.style.backgroundColor || event.parentElement.style.borderColor);
 
         events.sort((e1, e2) => dragType(e1) - dragType(e2));
         const styles = events.map(window.getComputedStyle);
         const eventToKeep = events.shift();
-        eventToKeep.style.backgroundImage = gradient;
-        eventToKeep.style.left = Math.min.apply(Math, styles.map(s => parsePixels(s.left))) + 'px';
-        eventToKeep.style.right = Math.min.apply(Math, styles.map(s => parsePixels(s.right))) + 'px';
-        eventToKeep.style.visibility = "visible";
-        eventToKeep.style.width = null;
-        eventToKeep.style.border = "solid 1px #FFF"
-
         events.forEach(event => {
           event.style.visibility = "hidden";
         });
+
+        if (eventToKeep.style.backgroundColor) {
+          eventToKeep.style.backgroundImage = stripesGradient(colors, 10, 45);
+          eventToKeep.style.left = Math.min.apply(Math, styles.map(s => parsePixels(s.left))) + 'px';
+          eventToKeep.style.right = Math.min.apply(Math, styles.map(s => parsePixels(s.right))) + 'px';
+          eventToKeep.style.visibility = "visible";
+          eventToKeep.style.width = null;
+          eventToKeep.style.border = "solid 1px #FFF"
+
+          events.forEach(event => {
+            event.style.visibility = "hidden";
+          });
+        } else {
+          const dots = eventToKeep.querySelector('[role="button"] div:first-child');
+          const dot = dots.querySelector('div');
+          dot.style.backgroundImage = stripesGradient(colors, 4, 90);
+          dot.style.width = colors.length * 4 + 'px';
+          dot.style.borderWidth = 0;
+          dot.style.height = '8px';
+
+          events.forEach(event => {
+            event.style.visibility = "hidden";
+          });
+        }
       } else {
         events.forEach(event => {
           event.style.visibility = "visible";
@@ -73,7 +89,7 @@ const merge = (mainCalender) => {
 const init = (mutationsList) => {
   const main = mutationsList && mutationsList
     .map(mutation => mutation.addedNodes[0] || mutation.target)
-    .filter(node => node.matches && node.matches("[role=\"main\"]"))[0];
+    .filter(node => node.matches && node.matches("[role=\"main\"], [role=\"dialog\"]"))[0];
 
   if (main) {
     merge(main);
