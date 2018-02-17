@@ -5,31 +5,31 @@
 // @include     http://www.google.com/calendar/*
 // @include     https://calendar.google.com/*
 // @include     http://calendar.google.com/*
-// @require     https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js
 // @version     1
 // @grant       none
 // ==/UserScript==
 
 'use strict';
 
-const merge = () => {
-  const stripesGradient = (colors) => {
-	  let gradient = "repeating-linear-gradient( 45deg,";
-	  let pos = 0;
+console.log("event merge");
 
-	  colors.forEach(color => {
-	    gradient += color + " " + pos + "px,";
-	    pos += 10;
-	    gradient += color + " " + pos + "px,";
-	  });
-	  gradient = gradient.slice(0, -1);
-	  gradient += ")";
-	  return gradient;
-	};
+const stripesGradient = (colors) => {
+  let gradient = "repeating-linear-gradient( 45deg,";
+  let pos = 0;
 
-  const grids = document.querySelectorAll("[role=\"main\"] [role=\"grid\"] > [role=\"presentation\"]");
-  const mainCalender = Array.from(grids).find(grid => typeof grid.dataset.isColumnViewContext === "undefined");
+  colors.forEach(color => {
+    gradient += color + " " + pos + "px,";
+    pos += 10;
+    gradient += color + " " + pos + "px,";
+  });
+  gradient = gradient.slice(0, -1);
+  gradient += ")";
+  return gradient;
+};
 
+const dragType = e => parseInt(e.dataset.dragsourceType);
+
+const merge = (mainCalender) => {
   const eventSets = {};
   const days = mainCalender.querySelectorAll("[role=\"gridcell\"]");
   days.forEach((day, index) => {
@@ -48,6 +48,8 @@ const merge = () => {
       const colors = events.map(event => event.style.backgroundColor || event.style.borderColor);
       const gradient = stripesGradient(colors);
 
+      const left = events[0].style.left;
+      events.sort((e1, e2) => dragType(e1) - dragType(e2));
       const eventToKeep = events.shift();
       eventToKeep.style.backgroundImage = gradient;
 
@@ -57,6 +59,7 @@ const merge = () => {
         width = Math.min(width, 100);
         eventToKeep.style.width = width + "%";
       }
+      eventToKeep.style.left = left;
 
       events.forEach(event => {
         event.style.visibility = "hidden";
@@ -64,8 +67,24 @@ const merge = () => {
     });
 }
 
-chrome.runtime.sendMessage({}, function(response) {
+const init = (mutationsList) => {
+  const main = mutationsList && mutationsList
+    .map(mutation => mutation.addedNodes[0] || mutation.target)
+    .filter(node => node.matches && node.matches("[role=\"main\"]"))[0];
+
+  if (main) {
+    const mainCalender = main.querySelector("[role=\"grid\"] > [role=\"presentation\"][data-type=\"1\"]");
+    if (mainCalender) {
+      merge(mainCalender);
+      new MutationObserver(() => merge(mainCalender))
+        .observe(mainCalender, { childList: true, subtree: true, attributes: true });
+    }
+  }
+}
+
+chrome.runtime.sendMessage({}, response => {
   if (response.enabled) {
-    $(document).ready(merge);
+    const observer = new MutationObserver(init);
+    observer.observe(document.querySelector('body'), { childList: true, subtree: true, attributes: true });
   }
 });
