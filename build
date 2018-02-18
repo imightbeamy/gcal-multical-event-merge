@@ -1,0 +1,1 @@
+find . -path '*/.*' -prune -o -type f -print | zip ./gcal-multical-event-merge.zip -@
