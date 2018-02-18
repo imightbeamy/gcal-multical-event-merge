@@ -114,4 +114,6 @@ setTimeout(() => chrome.storage.local.get('disabled', storage => {
     const observer = new MutationObserver(init);
     observer.observe(document.querySelector('body'), { childList: true, subtree: true, attributes: true });
   }
+
+  chrome.storage.onChanged.addListener(() => window.location.reload())
 }), 10);

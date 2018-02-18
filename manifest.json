@@ -14,8 +14,7 @@
   "permissions": [
     "https://www.google.com/calendar/*",
     "https://calendar.google.com/*",
-    "storage",
-    "tabs"
+    "storage"
   ],
   "background": {
     "scripts": ["background.js"]
