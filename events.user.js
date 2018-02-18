@@ -11,8 +11,6 @@
 
 'use strict';
 
-console.log("event merge");
-
 const stripesGradient = (colors, width, angle) => {
   let gradient = `repeating-linear-gradient( ${angle}deg,`;
   let pos = 0;
@@ -28,7 +26,6 @@ const stripesGradient = (colors, width, angle) => {
 };
 
 const dragType = e => parseInt(e.dataset.dragsourceType);
-const parsePixels = px => parseInt(px.replace('px', ''));
 
 const merge = (mainCalender) => {
   const eventSets = {};
@@ -55,9 +52,19 @@ const merge = (mainCalender) => {
           event.style.borderColor || // Not attending or not responded week view events
           event.parentElement.style.borderColor // Timed month view events
         );
-
         events.sort((e1, e2) => dragType(e1) - dragType(e2));
-        const styles = events.map(window.getComputedStyle);
+
+        const parentPosition = events[0].parentElement.getBoundingClientRect();
+        const positions = events.map(event => {
+          const eventPosition = event.getBoundingClientRect();
+          event.originalLeft = event.originalLeft || eventPosition.left;
+          event.originalRight = event.originalRight || eventPosition.right;
+          return {
+            left: eventPosition.left - parentPosition.left,
+            right: parentPosition.right - eventPosition.right,
+          }
+        });
+
         const eventToKeep = events.shift();
         events.forEach(event => {
           event.style.visibility = "hidden";
@@ -65,8 +72,8 @@ const merge = (mainCalender) => {
 
         if (eventToKeep.style.backgroundColor || eventToKeep.style.borderColor) {
           eventToKeep.style.backgroundImage = stripesGradient(colors, 10, 45);
-          eventToKeep.style.left = Math.min.apply(Math, styles.map(s => parsePixels(s.left))) + 'px';
-          eventToKeep.style.right = Math.min.apply(Math, styles.map(s => parsePixels(s.right))) + 'px';
+          eventToKeep.style.left = Math.min.apply(Math, positions.map(s => s.left)) + 'px';
+          eventToKeep.style.right = Math.min.apply(Math, positions.map(s => s.right)) + 'px';
           eventToKeep.style.visibility = "visible";
           eventToKeep.style.width = null;
           eventToKeep.style.border = "solid 1px #FFF"
@@ -95,20 +102,16 @@ const merge = (mainCalender) => {
 }
 
 const init = (mutationsList) => {
-  const main = mutationsList && mutationsList
+  mutationsList && mutationsList
     .map(mutation => mutation.addedNodes[0] || mutation.target)
-    .filter(node => node.matches && node.matches("[role=\"main\"], [role=\"dialog\"]"))[0];
-
-  if (main) {
-    merge(main);
-    new MutationObserver(() => merge(main))
-      .observe(main, { childList: true, subtree: true, attributes: true });
-  }
+    .filter(node => node.matches && node.matches("[role=\"main\"], [role=\"dialog\"]"))
+    .map(merge);
 }
 
-chrome.runtime.sendMessage({}, response => {
-  if (response.enabled) {
+setTimeout(() => chrome.storage.local.get('disabled', storage => {
+  console.log(`Event merge is ${storage.disabled ? 'disabled' : 'enabled'}`);
+  if (!storage.disabled) {
     const observer = new MutationObserver(init);
     observer.observe(document.querySelector('body'), { childList: true, subtree: true, attributes: true });
   }
-});
+}), 10);

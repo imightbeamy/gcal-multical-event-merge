@@ -12,12 +12,13 @@
         "run_at": "document_end"
     }],
   "permissions": [
-        "https://www.google.com/calendar/*",
-        "https://calendar.google.com/*"
+    "https://www.google.com/calendar/*",
+    "https://calendar.google.com/*",
+    "storage",
+    "tabs"
   ],
   "background": {
-    "scripts": ["background.js"],
-    "persistent": false
+    "scripts": ["background.js"]
   },
   "browser_action": {
     "default_title": "Toggle"
