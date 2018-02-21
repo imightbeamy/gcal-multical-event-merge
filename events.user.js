@@ -71,6 +71,14 @@ const merge = (mainCalender) => {
         });
 
         if (eventToKeep.style.backgroundColor || eventToKeep.style.borderColor) {
+          eventToKeep.originalStyle = eventToKeep.originalStyle || {
+            backgroundImage: eventToKeep.style.backgroundImage,
+            left: eventToKeep.style.left,
+            right: eventToKeep.style.right,
+            visibility: eventToKeep.style.visibility,
+            width: eventToKeep.style.width,
+            border: eventToKeep.style.border,
+          };
           eventToKeep.style.backgroundImage = stripesGradient(colors, 10, 45);
           eventToKeep.style.left = Math.min.apply(Math, positions.map(s => s.left)) + 'px';
           eventToKeep.style.right = Math.min.apply(Math, positions.map(s => s.right)) + 'px';
@@ -95,7 +103,9 @@ const merge = (mainCalender) => {
         }
       } else {
         events.forEach(event => {
-          event.style.visibility = "visible";
+          for (var k in event.originalStyle) {
+            event.style[k] = event.originalStyle[k];
+          }
         });
       }
     });
