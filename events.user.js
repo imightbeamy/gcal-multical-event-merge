@@ -38,7 +38,7 @@ const merge = (mainCalender) => {
         return;
       }
       let eventKey = Array.from(eventTitleEls).map(el => el.textContent).join('').replace(/\\s+/g,"");
-      eventKey = index + eventKey;
+      eventKey = index + eventKey + event.style.height;
       eventSets[eventKey] = eventSets[eventKey] || [];
       eventSets[eventKey].push(event);
     });
