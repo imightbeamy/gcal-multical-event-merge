@@ -16,9 +16,12 @@ const stripesGradient = (colors, width, angle) => {
   let pos = 0;
 
   colors.forEach(color => {
+    let color2 = color ;
+    let m = color.match(/^rgb\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)$/i);
+    if( m) color2 = 'rgb('+(m[1]>10?m[1]-10:0)+','+(m[2]>10?m[2]-10:0)+','+(m[3]>10?m[3]-10:0)+')' ;
     gradient += color + " " + pos + "px,";
     pos += width;
-    gradient += color + " " + pos + "px,";
+    gradient += color2 + " " + pos + "px,";
   });
   gradient = gradient.slice(0, -1);
   gradient += ")";
