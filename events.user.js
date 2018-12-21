@@ -27,6 +27,14 @@ const stripesGradient = (colors, width, angle) => {
 
 const dragType = e => parseInt(e.dataset.dragsourceType);
 
+const calculatePosition = (event, parentPosition) => {
+  const eventPosition = event.getBoundingClientRect();
+  return {
+    left: Math.max(eventPosition.left - parentPosition.left, 0),
+    right: parentPosition.right - eventPosition.right,
+  }
+}
+
 const mergeEventElements = (events) => {
   events.sort((e1, e2) => dragType(e1) - dragType(e2));
   const colors = events.map(event =>
@@ -37,13 +45,8 @@ const mergeEventElements = (events) => {
 
   const parentPosition = events[0].parentElement.getBoundingClientRect();
   const positions = events.map(event => {
-    const eventPosition = event.getBoundingClientRect();
-    event.originalLeft = event.originalLeft || eventPosition.left;
-    event.originalRight = event.originalRight || eventPosition.right;
-    return {
-      left: Math.max(event.originalLeft - parentPosition.left, 0),
-      right: parentPosition.right - event.originalRight,
-    }
+    event.originalPosition = event.originalPosition || calculatePosition(event, parentPosition);
+    return event.originalPosition;
   });
 
   const eventToKeep = events.shift();
