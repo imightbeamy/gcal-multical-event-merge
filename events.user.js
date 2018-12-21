@@ -28,12 +28,12 @@ const stripesGradient = (colors, width, angle) => {
 const dragType = e => parseInt(e.dataset.dragsourceType);
 
 const mergeEventElements = (events) => {
+  events.sort((e1, e2) => dragType(e1) - dragType(e2));
   const colors = events.map(event =>
     event.style.backgroundColor || // Week day and full day events marked 'attending'
     event.style.borderColor || // Not attending or not responded week view events
     event.parentElement.style.borderColor // Timed month view events
   );
-  events.sort((e1, e2) => dragType(e1) - dragType(e2));
 
   const parentPosition = events[0].parentElement.getBoundingClientRect();
   const positions = events.map(event => {
@@ -55,6 +55,7 @@ const mergeEventElements = (events) => {
   if (eventToKeep.style.backgroundColor || eventToKeep.style.borderColor) {
     eventToKeep.originalStyle = eventToKeep.originalStyle || {
       backgroundImage: eventToKeep.style.backgroundImage,
+      backgroundSize: eventToKeep.style.backgroundSize,
       left: eventToKeep.style.left,
       right: eventToKeep.style.right,
       visibility: eventToKeep.style.visibility,
@@ -62,6 +63,7 @@ const mergeEventElements = (events) => {
       border: eventToKeep.style.border,
     };
     eventToKeep.style.backgroundImage = stripesGradient(colors, 10, 45);
+    eventToKeep.style.backgroundSize = "initial";
     eventToKeep.style.left = Math.min.apply(Math, positions.map(s => s.left)) + 'px';
     eventToKeep.style.right = Math.min.apply(Math, positions.map(s => s.right)) + 'px';
     eventToKeep.style.visibility = "visible";
