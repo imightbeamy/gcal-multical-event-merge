@@ -41,8 +41,8 @@ const mergeEventElements = (events) => {
     event.originalLeft = event.originalLeft || eventPosition.left;
     event.originalRight = event.originalRight || eventPosition.right;
     return {
-      left: Math.max(eventPosition.left - parentPosition.left, 0),
-      right: parentPosition.right - eventPosition.right,
+      left: Math.max(event.originalLeft - parentPosition.left, 0),
+      right: parentPosition.right - event.originalRight,
     }
   });
 
