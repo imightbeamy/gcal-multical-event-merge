@@ -128,7 +128,7 @@ const merge = (mainCalender) => {
 const init = (mutationsList) => {
   mutationsList && mutationsList
     .map(mutation => mutation.addedNodes[0] || mutation.target)
-    .filter(node => node.matches && node.matches("[role=\"main\"], [role=\"dialog\"]"))
+    .filter(node => node.matches && node.matches("[role=\"main\"], [role=\"dialog\"], [role=\"grid\"]"))
     .map(merge);
 }
 

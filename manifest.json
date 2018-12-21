@@ -9,7 +9,8 @@
             "https://calendar.google.com/calendar/*"
         ],
         "js": [ "events.user.js" ],
-        "run_at": "document_end"
+        "run_at": "document_end",
+        "all_frames": true
     }],
   "permissions": [
     "https://www.google.com/calendar/*",
