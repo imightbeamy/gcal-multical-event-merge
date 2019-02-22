@@ -12,16 +12,20 @@
 'use strict';
 
 const stripesGradient = (colors, width, angle) => {
-  let gradient = `repeating-linear-gradient( ${angle}deg,`;
+  const offsetWidth = 1;
   let pos = 0;
-
-  colors.forEach(color => {
-    gradient += color + " " + pos + "px,";
-    pos += width;
-    gradient += color + " " + pos + "px,";
-  });
-  gradient = gradient.slice(0, -1);
-  gradient += ")";
+  let lastColor;
+  let gradient = colors.reduce((gradient, color, i) => {
+    const nextPos = pos + width + offsetWidth;
+    // Blend the colors
+    let offsetColor = chroma.blend(color, lastColor || color, 'multiply').css();
+    lastColor = color;
+    // Add offset stripe
+    gradient += `${offsetColor} ${pos}px, ${offsetColor} ${pos + offsetWidth}px,`;
+    gradient += `${color} ${pos + offsetWidth}px, ${color} ${nextPos}px,`;
+    pos = nextPos;
+    return gradient;
+  }, `repeating-linear-gradient( ${angle}deg,`).slice(0, -1) + ")";
   return gradient;
 };
 
