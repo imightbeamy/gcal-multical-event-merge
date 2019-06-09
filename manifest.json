@@ -8,7 +8,7 @@
             "https://www.google.com/calendar/*",
             "https://calendar.google.com/calendar/*"
         ],
-        "js": [ "events.user.js" ],
+        "js": [ "chroma.min.js", "events.user.js" ],
         "run_at": "document_end",
         "all_frames": true
     }],

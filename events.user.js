@@ -15,7 +15,15 @@ const stripesGradient = (colors, width, angle) => {
   let gradient = `repeating-linear-gradient( ${angle}deg,`;
   let pos = 0;
 
-  colors.forEach(color => {
+  const colorCounts = colors.reduce((counts, color) => {
+    counts[color] = (counts[color] || 0) + 1;
+    return counts;
+  }, {});
+
+  colors.forEach((color, i) => {
+    colorCounts[color] -= 1;
+    color = chroma(color).darken(colorCounts[color]/3).css();
+
     gradient += color + " " + pos + "px,";
     pos += width;
     gradient += color + " " + pos + "px,";
