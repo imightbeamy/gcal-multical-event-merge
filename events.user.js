@@ -72,6 +72,7 @@ const mergeEventElements = (events) => {
     eventToKeep.style.visibility = "visible";
     eventToKeep.style.width = null;
     eventToKeep.style.border = "solid 1px #FFF"
+    eventToKeep.style.textShadow = "0px 0px 5px black";
 
     events.forEach(event => {
       event.style.visibility = "hidden";
