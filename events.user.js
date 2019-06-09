@@ -103,6 +103,7 @@ const resetMergedEvents = (events) => {
     for (var k in event.originalStyle) {
       event.style[k] = event.originalStyle[k];
     }
+    event.style.visibility = "visible";
   });
 }
 
