@@ -64,6 +64,7 @@ const mergeEventElements = (events) => {
       visibility: eventToKeep.style.visibility,
       width: eventToKeep.style.width,
       border: eventToKeep.style.border,
+      textShadow: eventToKeep.style.textShadow,
     };
     eventToKeep.style.backgroundImage = stripesGradient(colors, 10, 45);
     eventToKeep.style.backgroundSize = "initial";
@@ -71,8 +72,14 @@ const mergeEventElements = (events) => {
     eventToKeep.style.right = Math.min.apply(Math, positions.map(s => s.right)) + 'px';
     eventToKeep.style.visibility = "visible";
     eventToKeep.style.width = null;
-    eventToKeep.style.border = "solid 1px #FFF"
-    eventToKeep.style.textShadow = "0px 0px 5px black";
+    eventToKeep.style.border = "solid 1px #FFF";
+
+    const computedSpanStyle = window.getComputedStyle(eventToKeep.querySelector('span'));
+    if (computedSpanStyle.color == "rgb(255, 255, 255)") {
+      eventToKeep.style.textShadow = "0px 0px 2px black";
+    } else {
+      eventToKeep.style.textShadow = "0px 0px 2px white";
+    }
 
     events.forEach(event => {
       event.style.visibility = "hidden";
