@@ -2,7 +2,7 @@
   "name": "__MSG_appName__",
   "description": "__MSG_appDesc__",
   "default_locale": "en",
-  "version": "2.2.0",
+  "version": "2.2.1",
       "content_scripts":[{
         "matches": [
             "https://www.google.com/calendar/*",
@@ -26,5 +26,6 @@
   "icons": {
     "48": "icon.png"
   },
+  "content_security_policy": "default-src 'self'",
   "manifest_version": 2
 }
