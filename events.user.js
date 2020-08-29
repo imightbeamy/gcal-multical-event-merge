@@ -22,7 +22,7 @@ const stripesGradient = (colors, width, angle) => {
 
   colors.forEach((color, i) => {
     colorCounts[color] -= 1;
-    color = chroma(color).darken(colorCounts[color]/3).css();
+    color = chroma(color).darken(colorCounts[color] / 3).css();
 
     gradient += color + " " + pos + "px,";
     pos += width;
@@ -41,7 +41,7 @@ const calculatePosition = (event, parentPosition) => {
     left: Math.max(eventPosition.left - parentPosition.left, 0),
     right: parentPosition.right - eventPosition.right,
   }
-}
+};
 
 const mergeEventElements = (events) => {
   events.sort((e1, e2) => dragType(e1) - dragType(e2));
@@ -75,6 +75,7 @@ const mergeEventElements = (events) => {
       borderColor: eventToKeep.style.borderColor,
       textShadow: eventToKeep.style.textShadow,
     };
+
     eventToKeep.style.backgroundImage = stripesGradient(colors, 10, 45);
     eventToKeep.style.backgroundSize = "initial";
     eventToKeep.style.left = Math.min.apply(Math, positions.map(s => s.left)) + 'px';
@@ -108,16 +109,16 @@ const mergeEventElements = (events) => {
       event.style.visibility = "hidden";
     });
   }
-}
+};
 
 const resetMergedEvents = (events) => {
   events.forEach(event => {
-    for (var k in event.originalStyle) {
+    for (let k in event.originalStyle) {
       event.style[k] = event.originalStyle[k];
     }
     event.style.visibility = "visible";
   });
-}
+};
 
 const merge = (mainCalender) => {
   const eventSets = {};
@@ -129,29 +130,48 @@ const merge = (mainCalender) => {
       if (!eventTitleEls.length) {
         return;
       }
-      let eventKey = Array.from(eventTitleEls).map(el => el.textContent).join('').replace(/\\s+/g,"");
-      eventKey = index + eventKey + event.style.height;
+      let eventKey = Array.from(eventTitleEls).map(el => el.textContent).join('').replace(/\\s+/g, "");
+      eventKey = index + '_' + eventKey + event.style.height;
       eventSets[eventKey] = eventSets[eventKey] || [];
       eventSets[eventKey].push(event);
     });
   });
 
-  Object.values(eventSets)
-    .forEach(events => {
+  let daysWithMergedEvents = [];
+
+  Object.entries(eventSets)
+    .forEach(eventSet => {
+      const eventKey = eventSet[0];
+      const index = eventKey.split('_')[0];
+      const events = eventSet[1];
       if (events.length > 1) {
         mergeEventElements(events);
+        daysWithMergedEvents.push(index);
       } else {
-        resetMergedEvents(events)
+        resetMergedEvents(events);
+        if (daysWithMergedEvents.includes(index)) {
+          moveOtherEvents(events);
+        }
       }
     });
-}
+};
+
+let otherEventsMoved = [];
+
+const moveOtherEvents = events => {
+  if (!otherEventsMoved.includes(events[0])) {
+    const originalTop = events[0].parentElement.style.top;
+    events[0].parentElement.style.top = `${parseInt(originalTop) - 1}em`;
+    otherEventsMoved.push(events[0]);
+  }
+};
 
 const init = (mutationsList) => {
   mutationsList && mutationsList
     .map(mutation => mutation.addedNodes[0] || mutation.target)
     .filter(node => node.matches && node.matches("[role=\"main\"], [role=\"dialog\"], [role=\"grid\"]"))
     .map(merge);
-}
+};
 
 setTimeout(() => chrome.storage.local.get('disabled', storage => {
   console.log(`Event merge is ${storage.disabled ? 'disabled' : 'enabled'}`);
