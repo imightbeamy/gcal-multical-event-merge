@@ -24,12 +24,12 @@ const stripesGradient = (colors, width, angle) => {
     colorCounts[color] -= 1;
     color = chroma(color).darken(colorCounts[color] / 3).css();
 
-    gradient += color + " " + pos + "px,";
+    gradient += color + ' ' + pos + 'px,';
     pos += width;
-    gradient += color + " " + pos + "px,";
+    gradient += color + ' ' + pos + 'px,';
   });
   gradient = gradient.slice(0, -1);
-  gradient += ")";
+  gradient += ')';
   return gradient;
 };
 
@@ -59,7 +59,7 @@ const mergeEventElements = (events) => {
 
   const eventToKeep = events.shift();
   events.forEach(event => {
-    event.style.visibility = "hidden";
+    event.style.visibility = 'hidden';
   });
 
 
@@ -77,25 +77,25 @@ const mergeEventElements = (events) => {
     };
 
     eventToKeep.style.backgroundImage = stripesGradient(colors, 10, 45);
-    eventToKeep.style.backgroundSize = "initial";
+    eventToKeep.style.backgroundSize = 'initial';
     eventToKeep.style.left = Math.min.apply(Math, positions.map(s => s.left)) + 'px';
     eventToKeep.style.right = Math.min.apply(Math, positions.map(s => s.right)) + 'px';
-    eventToKeep.style.visibility = "visible";
+    eventToKeep.style.visibility = 'visible';
     eventToKeep.style.width = null;
-    eventToKeep.style.border = "solid 1px #FFF";
+    eventToKeep.style.border = 'solid 1px #FFF';
 
     // Clear setting color for declined events
     eventToKeep.querySelector('[aria-hidden="true"]').style.color = null;
 
     const computedSpanStyle = window.getComputedStyle(eventToKeep.querySelector('span'));
-    if (computedSpanStyle.color == "rgb(255, 255, 255)") {
-      eventToKeep.style.textShadow = "0px 0px 2px black";
+    if (computedSpanStyle.color == 'rgb(255, 255, 255)') {
+      eventToKeep.style.textShadow = '0px 0px 2px black';
     } else {
-      eventToKeep.style.textShadow = "0px 0px 2px white";
+      eventToKeep.style.textShadow = '0px 0px 2px white';
     }
 
     events.forEach(event => {
-      event.style.visibility = "hidden";
+      event.style.visibility = 'hidden';
     });
   } else {
     const dots = eventToKeep.querySelector('[role="button"] div:first-child');
@@ -106,7 +106,7 @@ const mergeEventElements = (events) => {
     dot.style.height = '8px';
 
     events.forEach(event => {
-      event.style.visibility = "hidden";
+      event.style.visibility = 'hidden';
     });
   }
 };
@@ -116,21 +116,21 @@ const resetMergedEvents = (events) => {
     for (let k in event.originalStyle) {
       event.style[k] = event.originalStyle[k];
     }
-    event.style.visibility = "visible";
+    event.style.visibility = 'visible';
   });
 };
 
 const merge = (mainCalender) => {
   const eventSets = {};
-  const days = mainCalender.querySelectorAll("[role=\"gridcell\"]");
+  const days = mainCalender.querySelectorAll('[role="gridcell"]');
   days.forEach((day, index) => {
-    const events = Array.from(day.querySelectorAll("[data-eventid][role=\"button\"], [data-eventid] [role=\"button\"]"));
+    const events = Array.from(day.querySelectorAll('[data-eventid][role="button"], [data-eventid] [role="button"]'));
     events.forEach(event => {
       const eventTitleEls = event.querySelectorAll('[aria-hidden="true"]');
       if (!eventTitleEls.length) {
         return;
       }
-      let eventKey = Array.from(eventTitleEls).map(el => el.textContent).join('').replace(/\\s+/g, "");
+      let eventKey = Array.from(eventTitleEls).map(el => el.textContent).join('').replace(/\\s+/g, '');
       eventKey = index + '_' + eventKey + event.style.height;
       eventSets[eventKey] = eventSets[eventKey] || [];
       eventSets[eventKey].push(event);
@@ -141,8 +141,7 @@ const merge = (mainCalender) => {
 
   Object.entries(eventSets)
     .forEach(eventSet => {
-      const eventKey = eventSet[0];
-      const index = eventKey.split('_')[0];
+      const index = eventSet[0].split('_')[0];
       const events = eventSet[1];
       if (events.length > 1) {
         const length = events.length;
@@ -156,7 +155,6 @@ const merge = (mainCalender) => {
         }
       }
     });
-  console.log(daysWithMergedEvents)
 };
 
 let otherEventsMoved = [];
@@ -172,7 +170,7 @@ const moveOtherEvents = (events, amount) => {
 const init = (mutationsList) => {
   mutationsList && mutationsList
     .map(mutation => mutation.addedNodes[0] || mutation.target)
-    .filter(node => node.matches && node.matches("[role=\"main\"], [role=\"dialog\"], [role=\"grid\"]"))
+    .filter(node => node.matches && node.matches('[role="main"], [role="dialog"], [role="grid"]'))
     .map(merge);
 };
 
