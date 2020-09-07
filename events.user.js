@@ -145,23 +145,26 @@ const merge = (mainCalender) => {
       const index = eventKey.split('_')[0];
       const events = eventSet[1];
       if (events.length > 1) {
+        const length = events.length;
         mergeEventElements(events);
-        daysWithMergedEvents.push(index);
+        daysWithMergedEvents.push({ 'index': index, 'amount': length });
       } else {
         resetMergedEvents(events);
-        if (daysWithMergedEvents.includes(index)) {
-          moveOtherEvents(events);
+        const day = daysWithMergedEvents.find(day => day.index === index);
+        if (day) {
+          moveOtherEvents(events, day.amount);
         }
       }
     });
+  console.log(daysWithMergedEvents)
 };
 
 let otherEventsMoved = [];
 
-const moveOtherEvents = events => {
+const moveOtherEvents = (events, amount) => {
   if (!otherEventsMoved.includes(events[0])) {
     const originalTop = events[0].parentElement.style.top;
-    events[0].parentElement.style.top = `${parseInt(originalTop) - 1}em`;
+    events[0].parentElement.style.top = `${parseInt(originalTop) - (amount - 1)}em`;
     otherEventsMoved.push(events[0]);
   }
 };
