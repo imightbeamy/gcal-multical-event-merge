@@ -11,9 +11,10 @@
 
 'use strict';
 
-const stripesGradient = (colors, width, angle) => {
-  let gradient = `repeating-linear-gradient( ${angle}deg,`;
+const verticalBandColours = (colors) => {
+  let gradient = `linear-gradient( 90deg,`;
   let pos = 0;
+  const width = 100/colors.length
 
   const colorCounts = colors.reduce((counts, color) => {
     counts[color] = (counts[color] || 0) + 1;
@@ -24,14 +25,14 @@ const stripesGradient = (colors, width, angle) => {
     colorCounts[color] -= 1;
     color = chroma(color).darken(colorCounts[color]/3).css();
 
-    gradient += color + " " + pos + "px,";
+    gradient += color + " " + pos + "%,";
     pos += width;
-    gradient += color + " " + pos + "px,";
+    gradient += color + " " + pos + "%,";
   });
   gradient = gradient.slice(0, -1);
   gradient += ")";
   return gradient;
-};
+}
 
 const dragType = e => parseInt(e.dataset.dragsourceType);
 
@@ -75,7 +76,7 @@ const mergeEventElements = (events) => {
       borderColor: eventToKeep.style.borderColor,
       textShadow: eventToKeep.style.textShadow,
     };
-    eventToKeep.style.backgroundImage = stripesGradient(colors, 10, 45);
+    eventToKeep.style.backgroundImage = verticalBandColours(colors);
     eventToKeep.style.backgroundSize = "initial";
     eventToKeep.style.left = Math.min.apply(Math, positions.map(s => s.left)) + 'px';
     eventToKeep.style.right = Math.min.apply(Math, positions.map(s => s.right)) + 'px';
@@ -99,7 +100,7 @@ const mergeEventElements = (events) => {
   } else {
     const dots = eventToKeep.querySelector('[role="button"] div:first-child');
     const dot = dots.querySelector('div');
-    dot.style.backgroundImage = stripesGradient(colors, 4, 90);
+    dot.style.backgroundImage = verticalBandColours(colors);
     dot.style.width = colors.length * 4 + 'px';
     dot.style.borderWidth = 0;
     dot.style.height = '8px';
