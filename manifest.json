@@ -2,7 +2,7 @@
   "name": "__MSG_appName__",
   "description": "__MSG_appDesc__",
   "default_locale": "en",
-  "version": "2.2.1",
+  "version": "2.3.0",
       "content_scripts":[{
         "matches": [
             "https://www.google.com/calendar/*",
@@ -13,19 +13,21 @@
         "all_frames": true
     }],
   "permissions": [
-    "https://www.google.com/calendar/*",
-    "https://calendar.google.com/*",
     "storage"
   ],
+  "host_permissions": [
+    "https://www.google.com/calendar/*",
+    "https://calendar.google.com/*"
+  ],
   "background": {
-    "scripts": ["background.js"]
+    "service_worker": "background.js"
   },
-  "browser_action": {
+  "action": {
     "default_title": "Toggle"
   },
   "icons": {
     "48": "icon.png"
   },
-  "content_security_policy": "default-src 'self'",
-  "manifest_version": 2
+  "content_security_policy": {"default-src": "self"},
+  "manifest_version": 3
 }

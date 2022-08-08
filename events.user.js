@@ -16,23 +16,29 @@ const verticalBandColours = (colors) => {
   let pos = 0;
   const width = 100/colors.length
 
-  const colorCounts = colors.reduce((counts, color) => {
-    counts[color] = (counts[color] || 0) + 1;
-    return counts;
-  }, {});
 
-  colors.forEach((color, i) => {
-    colorCounts[color] -= 1;
-    color = chroma(color).darken(colorCounts[color]/3).css();
-
-    gradient += color + " " + pos + "%,";
+  colors.forEach((colorObj, i) => {
     pos += width;
-    gradient += color + " " + pos + "%,";
+    if (colorObj.bg) {
+      gradient += colorObj.bg + " 0%" + pos + "%,";
+    }
+    if (colorObj.bc) {
+      // if border set then zebra segment to simulate border and text
+      const colorBrighter = chroma(colorObj.bc).brighten().css();
+      const fifth = width/5
+      gradient += `${colorObj.bc} 0% ${pos - width + fifth}%,
+      ${colorBrighter} 0% ${pos - width + (2*fifth)}%,
+      ${colorObj.bc} 0% ${pos - width + (3*fifth)}%,
+      ${colorBrighter} 0% ${pos - width + (4*fifth)}%,
+      ${colorObj.bc} 0% ${pos}%,`;
+    } else {
+      gradient += colorObj.pbc + " 0%" + pos + "%,";
+    }
   });
   gradient = gradient.slice(0, -1);
   gradient += ")";
   return gradient;
-}
+};
 
 const dragType = e => parseInt(e.dataset.dragsourceType);
 
@@ -46,11 +52,25 @@ const calculatePosition = (event, parentPosition) => {
 
 const mergeEventElements = (events) => {
   events.sort((e1, e2) => dragType(e1) - dragType(e2));
-  const colors = events.map(event =>
-    event.style.backgroundColor || // Week day and full day events marked 'attending'
-    event.style.borderColor || // Not attending or not responded week view events
-    event.parentElement.style.borderColor // Timed month view events
-  );
+  const colors = events.map(event => {
+    return {
+      bg: event.style.backgroundColor, // Week day and full day events marked 'attending'
+      bc: event.style.borderColor, // Not attending or not responded week view events
+      pbc: event.parentElement.style.borderColor // Timed month view events
+    }
+});
+
+  if (events.length === 6) {
+    console.log('sixer found')
+    events.forEach((event,i) => {
+      console.log(i)
+      console.log(event.style)
+      console.log(event.style.backgroundColor)
+      console.log(event.style.borderColor)
+      console.log(event.parentElement.style.borderColor)
+    })
+    console.log(colors)
+  }
 
   const parentPosition = events[0].parentElement.getBoundingClientRect();
   const positions = events.map(event => {
@@ -82,7 +102,7 @@ const mergeEventElements = (events) => {
     eventToKeep.style.right = Math.min.apply(Math, positions.map(s => s.right)) + 'px';
     eventToKeep.style.visibility = "visible";
     eventToKeep.style.width = null;
-    eventToKeep.style.border = "solid 1px #FFF";
+    //eventToKeep.style.border = "solid 1px #FFF";
 
     // Clear setting color for declined events
     eventToKeep.querySelector('[aria-hidden="true"]').style.color = null;
