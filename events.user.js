@@ -21,8 +21,7 @@ const verticalBandColours = (colors) => {
     pos += width;
     if (colorObj.bg) {
       gradient += colorObj.bg + " 0%" + pos + "%,";
-    }
-    if (colorObj.bc) {
+    } else if (colorObj.bc) {
       // if border set then zebra segment to simulate border and text
       const colorBrighter = chroma(colorObj.bc).brighten().css();
       const fifth = width/5
@@ -51,26 +50,15 @@ const calculatePosition = (event, parentPosition) => {
 }
 
 const mergeEventElements = (events) => {
-  events.sort((e1, e2) => dragType(e1) - dragType(e2));
+  // disabling this as it changes the orders of the events making clicking on the now transparent divs not be in the correct order
+  // events.sort((e1, e2) => dragType(e1) - dragType(e2));
   const colors = events.map(event => {
     return {
       bg: event.style.backgroundColor, // Week day and full day events marked 'attending'
       bc: event.style.borderColor, // Not attending or not responded week view events
       pbc: event.parentElement.style.borderColor // Timed month view events
     }
-});
-
-  if (events.length === 6) {
-    console.log('sixer found')
-    events.forEach((event,i) => {
-      console.log(i)
-      console.log(event.style)
-      console.log(event.style.backgroundColor)
-      console.log(event.style.borderColor)
-      console.log(event.parentElement.style.borderColor)
-    })
-    console.log(colors)
-  }
+  });
 
   const parentPosition = events[0].parentElement.getBoundingClientRect();
   const positions = events.map(event => {
@@ -79,8 +67,13 @@ const mergeEventElements = (events) => {
   });
 
   const eventToKeep = events.shift();
-  events.forEach(event => {
-    event.style.visibility = "hidden";
+
+  events.forEach((event,i,allEvents) => {
+    // making old events invisible (but still clickable)
+    // moving them into new positions that line up with gradiented colours
+    event.style.opacity = 0;
+    event.style.left = `calc((100% - 0px) * ${(i+1)/(allEvents.length+1)} + 0px)`;
+    event.style.width = `calc((100% - 0px) * ${1/(allEvents.length+1)}`;
   });
 
 
@@ -102,7 +95,7 @@ const mergeEventElements = (events) => {
     eventToKeep.style.right = Math.min.apply(Math, positions.map(s => s.right)) + 'px';
     eventToKeep.style.visibility = "visible";
     eventToKeep.style.width = null;
-    //eventToKeep.style.border = "solid 1px #FFF";
+    eventToKeep.style.color = '#fff';
 
     // Clear setting color for declined events
     eventToKeep.querySelector('[aria-hidden="true"]').style.color = null;
@@ -115,7 +108,7 @@ const mergeEventElements = (events) => {
     }
 
     events.forEach(event => {
-      event.style.visibility = "hidden";
+      event.style.opacity = 0;
     });
   } else {
     const dots = eventToKeep.querySelector('[role="button"] div:first-child');
@@ -126,7 +119,7 @@ const mergeEventElements = (events) => {
     dot.style.height = '8px';
 
     events.forEach(event => {
-      event.style.visibility = "hidden";
+      event.style.opacity = 0;
     });
   }
 }
@@ -136,7 +129,7 @@ const resetMergedEvents = (events) => {
     for (var k in event.originalStyle) {
       event.style[k] = event.originalStyle[k];
     }
-    event.style.visibility = "visible";
+    event.style.opacity = 0;
   });
 }
 
